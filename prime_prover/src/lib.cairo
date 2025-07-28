@@ -1,32 +1,39 @@
-/// Interface representing `HelloContract`.
-/// This interface allows modification and retrieval of the contract balance.
-#[starknet::interface]
-pub trait IHelloStarknet<TContractState> {
-    /// Increase contract balance.
-    fn increase_balance(ref self: TContractState, amount: felt252);
-    /// Retrieve contract balance.
-    fn get_balance(self: @TContractState) -> felt252;
+/// Checks if a number is prime
+///
+/// # Arguments
+///
+/// * `n` - The number to check
+///
+/// # Returns
+///
+/// * `true` if the number is prime
+/// * `false` if the number is not prime
+fn is_prime(n: u128) -> bool {
+    if n <= 2 {
+        return false;
+    }
+    if n % 2 == 0 {
+        return false;
+    }
+    let mut i = 3;
+    let mut is_prime = true;
+    loop {
+        if i * i > n {
+            break;
+        }
+        if n % i == 0 {
+            is_prime = false;
+            break;
+        }
+        i += 2;
+    }
+    is_prime
 }
 
-/// Simple contract for managing balance.
-#[starknet::contract]
-mod HelloStarknet {
-    use starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
-
-    #[storage]
-    struct Storage {
-        balance: felt252,
+#[executable]
+fn main(input: u128) -> bool {
+    if input > 1000000 { // Arbitrary limit for demo purposes
+        panic!("Input too large, must be <= 1,000,000");
     }
-
-    #[abi(embed_v0)]
-    impl HelloStarknetImpl of super::IHelloStarknet<ContractState> {
-        fn increase_balance(ref self: ContractState, amount: felt252) {
-            assert(amount != 0, 'Amount cannot be 0');
-            self.balance.write(self.balance.read() + amount);
-        }
-
-        fn get_balance(self: @ContractState) -> felt252 {
-            self.balance.read()
-        }
-    }
+    is_prime(input)
 }
