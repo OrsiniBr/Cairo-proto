@@ -10,6 +10,6 @@ enable-gas = false
 cairo_execute = "2.11.4"
 
 
-# [[target.executable]]
-# name = "variables"
-# function = "hello_world::hello_world::main"
+[[target.executable]]
+name = "variables"
+function = "variables::main"
